@@ -1,0 +1,21 @@
+# PlatformIO
+.pio/
+.pioenvs/
+.piolibdeps/
+.vscode/
+
+# Build artifacts
+build/
+*.bin
+*.elf
+*.map
+*.log
+
+# Local secrets
+secrets.ini
+wifi.ini
+.env
+
+# OS files
+Thumbs.db
+.DS_Store
