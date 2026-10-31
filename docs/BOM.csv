@@ -1,52 +1,28 @@
 Category,Item,Qty,Specification / Notes,Approx price (INR),Optional
 Controller,ESP32-C3 Super Mini,1,HW-466AB; USB-C; 4 MB flash; 3.3 V logic,235,No
-Controller (cost-down),ESP32-C3-MINI-1 module,1,For a custom PCB version; needs 3.3 V supply and antenna clearance,180,Yes
-Controller (ESP8266 path),ESP-12E / ESP-12F module,1,4 MB flash; 2 mm pitch; needs 3.3 V regulator,150,Yes
-Controller (ESP8266 path),MCP3202 12-bit 2-channel ADC,1,SPI; 3.3 V; for ESP-12E migration,150,Yes
-Controller (ESP8266 path),AMS1117-3.3 LDO,1,3.3 V 1 A; for ESP-12E; add 10 uF input/output caps,30,Yes
 Sensor,ZMPT101B AC voltage sensor module,1,0-250 V AC; 5 V; 0-5 V output biased at 2.5 V,180,No
 Sensor,ZMCT103C 5 A AC current sensor module,1,5 A / 5 mA; 1000:1; 5 V; 0-5 V output biased at 2.5 V,180,No
-Power,HLK-5M05 AC-DC module,1,5 V 1 A isolated; 3 kV isolation,300,No
-Power,HLK-PM01 (alternative),1,Alternative to HLK-5M05; 5 V 0.6 A; marginal for ESP32 + relay; do not order both,250,Yes
-Relay,SRD-05VDC-SL-C relay (1-pole alternative),1,5 V coil; 10 A / 250 VAC SPDT; only if plug polarity is known,60,Yes
-Relay,2-pole 10 A relay,1,5 V coil; 10 A / 250 VAC; switches L and N; recommended,120,No
-Relay driver,S8050 NPN transistor,2,TO-92; relay driver and buzzer,10,No
-Relay driver,1N4007 diode,2,Flyback across relay coil; 1 A 1000 V,5,No
-Relay driver,1 kOhm resistor,2,Base resistor,5,No
-Relay driver,10 kOhm resistor,2,Base pull-down,5,No
-Relay snubber,100 ohm 1 W resistor,1,Relay contact snubber,10,Yes
-Relay snubber,100 nF X2 capacitor,1,Relay contact snubber,20,Yes
+Power,5 V 2 A USB charger,1,Reputable brand; double-insulated; powers C3 and sensors,300,No
+Power,USB-C cable,1,Data cable for programming; power-only for operation,100,No
 Analog front-end,10 kOhm 1% resistor,4,Two dividers (2 per channel),10,No
 Analog front-end,1 kOhm 1% resistor,2,Series filter resistor,5,No
 Analog front-end,10 nF ceramic capacitor,2,ADC filter; one per channel,5,No
 Analog front-end,BAT54S dual Schottky,2,ADC clamp,20,No
-Analog front-end,3.3 V TVS or Zener,2,Optional extra protection,20,Yes
+Passives,100 uF 10 V electrolytic,1,5 V rail near sensors,10,No
+Passives,100 nF ceramic capacitor,2,Decoupling,5,No
 Protection,5 A slow-blow fuse,1,Main load fuse,30,No
 Protection,5 A fuse holder,1,Panel or PCB mount,50,No
-Protection,0.5 A slow-blow fuse,1,HLK branch,20,No
 Protection,0.1 A slow-blow fuse,1,ZMPT branch,20,Yes
-Protection,Small fuse holders (5 x 20 mm),2,For HLK and ZMPT branch fuses,40,Yes
-Protection,MOV 275 VAC,1,14D431K or similar; across L-N,20,No
-Protection,X2 capacitor 0.1 uF,1,Across L-N; EMI,25,No
-Protection,16 A rocker switch,1,Master switch,50,No
+Protection,0.1 A fuse holder,1,ZMPT branch,20,Yes
 Wiring,1.5 mm2 copper wire,2,L/N/E mains wiring; 2 m total,120,No
-Wiring,0.75 mm2 wire,2,HLK and sensor branches; 2 m total,60,No
+Wiring,0.75 mm2 wire,2,Sensor and 5 V wiring; 2 m total,60,No
 Wiring,Screw terminal blocks,4,5.08 mm pitch; L/N/E in/out,100,No
 Wiring,Heat-shrink tubing,1,Assorted pack; insulate all mains joints,50,No
 Wiring,Cable gland,2,Strain relief for input/output,60,No
 Wiring,Spade connectors / ferrules,1,Assorted pack; for terminals,50,Yes
-Enclosure,Plastic project box / strip enclosure,1,Flame-retardant ABS/PC; room for mains barrier,350,No
-Enclosure,4-6 socket outlets,1,16 A rated; earth continuity,250,No
+Enclosure,Plastic project box,1,Flame-retardant ABS/PC; room for mains barrier,350,No
 Enclosure,Earth terminal and star washer,1,Bond enclosure and socket earth,30,No
-Passives,1000 uF 10 V electrolytic,1,5 V bulk capacitor near ESP32,20,No
-Passives,100 uF 10 V electrolytic,1,Relay driver local bulk,10,No
-Passives,100 nF ceramic capacitor,5,Decoupling,10,No
-UI,Push button,1,6 mm tactile; GPIO4,10,Yes
-UI,0.96 inch SSD1306 OLED,1,I2C; 3.3 V; optional local display,150,Yes
-UI,Active buzzer 5 V,1,Optional; via NPN,20,Yes
-PCB,Custom PCB,1,2-layer; 2 oz copper; isolation slots,300,Yes
-PCB,Header pins / sockets,1,For Super Mini and sensor modules,30,Yes
-Tools,USB-C data cable,1,For programming; do not use with mains connected,100,Yes
+Enclosure,3-pin plug / extension strip,1,Certified strip; monitoring only,250,Yes
 Tools,CAT III multimeter,1,Safety measurement,1500,Yes
 Tools,Clamp meter,1,AC current reference,1200,Yes
 Tools,Isolation transformer / RCD,1,For safe mains testing,2000,Yes
