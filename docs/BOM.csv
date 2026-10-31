@@ -1,28 +1,27 @@
-Category,Item,Qty,Specification / Notes,Approx price (INR),Optional
-Controller,ESP32-C3 Super Mini,1,HW-466AB; USB-C; 4 MB flash; 3.3 V logic,235,No
-Sensor,ZMPT101B AC voltage sensor module,1,0-250 V AC; 5 V; 0-5 V output biased at 2.5 V,180,No
-Sensor,ZMCT103C 5 A AC current sensor module,1,5 A / 5 mA; 1000:1; 5 V; 0-5 V output biased at 2.5 V,180,No
-Power,5 V 2 A USB charger,1,Reputable brand; double-insulated; powers C3 and sensors,300,No
-Power,USB-C cable,1,Data cable for programming; power-only for operation,100,No
-Analog front-end,10 kOhm 1% resistor,4,Two dividers (2 per channel),10,No
-Analog front-end,1 kOhm 1% resistor,2,Series filter resistor,5,No
-Analog front-end,10 nF ceramic capacitor,2,ADC filter; one per channel,5,No
-Analog front-end,BAT54S dual Schottky,2,ADC clamp,20,No
-Passives,100 uF 10 V electrolytic,1,5 V rail near sensors,10,No
-Passives,100 nF ceramic capacitor,2,Decoupling,5,No
-Protection,5 A slow-blow fuse,1,Main load fuse,30,No
-Protection,5 A fuse holder,1,Panel or PCB mount,50,No
-Protection,0.1 A slow-blow fuse,1,ZMPT branch,20,Yes
-Protection,0.1 A fuse holder,1,ZMPT branch,20,Yes
-Wiring,1.5 mm2 copper wire,2,L/N/E mains wiring; 2 m total,120,No
-Wiring,0.75 mm2 wire,2,Sensor and 5 V wiring; 2 m total,60,No
-Wiring,Screw terminal blocks,4,5.08 mm pitch; L/N/E in/out,100,No
-Wiring,Heat-shrink tubing,1,Assorted pack; insulate all mains joints,50,No
-Wiring,Cable gland,2,Strain relief for input/output,60,No
-Wiring,Spade connectors / ferrules,1,Assorted pack; for terminals,50,Yes
-Enclosure,Plastic project box,1,Flame-retardant ABS/PC; room for mains barrier,350,No
-Enclosure,Earth terminal and star washer,1,Bond enclosure and socket earth,30,No
-Enclosure,3-pin plug / extension strip,1,Certified strip; monitoring only,250,Yes
-Tools,CAT III multimeter,1,Safety measurement,1500,Yes
-Tools,Clamp meter,1,AC current reference,1200,Yes
-Tools,Isolation transformer / RCD,1,For safe mains testing,2000,Yes
+Category,Item,Qty,Specification / Notes,Unit price (INR),Line total (INR),Optional
+Controller,ESP32-C3 Super Mini,1,HW-466AB; USB-C; 12-bit ADC; 3.3 V logic,235,235,No
+Sensor,ZMPT101B AC voltage sensor module,1,0-250 V AC; 3.3 V; output biased at VCC/2,180,180,No
+Sensor,ZMCT103C 5 A AC current sensor module,1,5 A / 5 mA; 1000:1; 3.3 V; output biased at VCC/2,180,180,No
+Power,5 V 2 A USB charger,1,Reputable brand; double-insulated; powers the C3,300,300,No
+Power,USB-C cable,1,Programming only; unplug before mains,100,100,No
+Passives,100 nF ceramic capacitor,4,Two ADC filters plus 3.3 V decoupling,5,20,No
+Passives,100 uF 10 V electrolytic,1,3.3 V rail near the sensors,10,10,No
+Protection,5 A slow-blow fuse,1,Main load fuse,30,30,No
+Protection,5 A fuse holder,1,Panel or PCB mount,50,50,No
+Wiring,1.5 mm2 copper wire,2,L/N/E mains wiring; per metre,60,120,No
+Wiring,0.75 mm2 wire,2,Sensor and 3.3 V wiring; per metre,30,60,No
+Wiring,Screw terminal blocks,4,5.08 mm pitch; L/N/E in/out,25,100,No
+Wiring,Heat-shrink tubing,1,Assorted pack; insulate all mains joints,50,50,No
+Wiring,Cable gland,2,Strain relief for input and output,30,60,No
+Enclosure,Plastic project box,1,Flame-retardant ABS/PC; room for a mains barrier,350,350,No
+Enclosure,Earth terminal and star washer,1,Bond enclosure and socket earth,30,30,No
+Protection,0.1 A slow-blow fuse,1,ZMPT branch,20,20,Yes
+Protection,0.1 A fuse holder,1,ZMPT branch,20,20,Yes
+Wiring,Spade connectors / ferrules,1,Assorted pack; for terminals,50,50,Yes
+Enclosure,3-pin plug / certified strip,1,Certified strip; monitoring only,250,250,Yes
+Fallback,10k 1% resistor,2,Optional 5 V fallback divider; top resistor,10,20,Yes
+Fallback,20k 1% resistor,2,Optional 5 V fallback divider; bottom resistor,10,20,Yes
+Fallback,BAT54S dual Schottky,2,Optional ADC clamp for the 5 V fallback,20,40,Yes
+Tools,CAT III multimeter,1,Safety measurement,1500,1500,Yes
+Tools,Clamp meter,1,AC current reference,1200,1200,Yes
+Tools,Isolation transformer / RCD,1,For safe mains testing,2000,2000,Yes
