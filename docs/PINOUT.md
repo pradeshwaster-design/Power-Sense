@@ -6,6 +6,73 @@ Complete wiring reference for the simple **Power Sense** monitor: ESP32-C3 Super
 
 ---
 
+## Circuit diagram
+
+### Low-voltage side
+
+```text
+      5 V 2 A CHARGER
+      +5V ───────────────────► ESP32-C3 5V
+      GND ───────────────────► ESP32-C3 GND
+
+      ESP32-C3 3V3 ──┬───────► ZMPT101B VCC
+                     └───────► ZMCT103C VCC
+
+      ESP32-C3 GND ──┬───────► ZMPT101B GND
+                     ├───────► ZMCT103C GND
+                     ├───────► 100 nF (GPIO3 filter)
+                     ├───────► 100 nF (GPIO4 filter)
+                     └───────► 100 µF + 100 nF (3V3 decoupling)
+```
+
+### ZMPT101B — voltage
+
+```text
+              +------------------+
+  3V3 --------| VCC          OUT |--------*--------► GPIO3
+              |                  |        |
+  GND --------| GND              |      [100 nF]
+              |   ZMPT101B       |        |
+  L   --------| AC-L             |       GND
+  N   --------| AC-N             |
+              +------------------+
+```
+
+### ZMCT103C — current
+
+```text
+              +------------------+
+  3V3 --------| VCC          OUT |--------*--------► GPIO4
+              |                  |        |
+  GND --------| GND              |      [100 nF]
+  GND --------| GND              |        |
+              |   ZMCT103C       |       GND
+              |  CT terminals    |  ◄── CT secondary from the toroid
+              +------------------+
+
+  Live wire ──────( CT hole )──────► load Live
+```
+
+The 100 nF capacitors go from each OUT pin to GND, physically close to the ESP32.
+
+### AC side
+
+```text
+230 V L ──[5 A fuse]──┬──( CT hole )──► load Live
+                      └── ZMPT101B AC-L
+
+230 V N ──────────────┬────────────────► load Neutral
+                      └── ZMPT101B AC-N
+
+230 V E ──────────────────────────────► load Earth
+```
+
+- The ZMPT101B is across Live and Neutral, before the strip switch.
+- The CT is around the Live wire only, after the fuse, with the load current flowing through it.
+- Nothing on the AC side connects to the ESP32 side.
+
+---
+
 ## 1. Power
 
 ```text
