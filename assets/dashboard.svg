@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="430" viewBox="0 0 900 430" role="img" aria-label="Preview of the Power Sense dashboard showing voltage, current and power">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="1" stop-color="#0e1a2b"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#34d399"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect x="1" y="1" width="898" height="428" rx="24" fill="url(#bg)" stroke="#1e293b"/>
+  <rect x="1" y="1" width="898" height="428" rx="24" fill="none" stroke="url(#accent)" stroke-opacity="0.2"/>
+
+  <g font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif">
+    <circle cx="40" cy="48" r="5" fill="#34d399"/>
+    <text x="56" y="54" font-size="22" font-weight="700" fill="#f8fafc">PowerSense</text>
+    <rect x="790" y="33" width="70" height="28" rx="14" fill="#0f2a22" stroke="#1f6f57"/>
+    <circle cx="806" cy="47" r="4" fill="#34d399"/>
+    <text x="817" y="51" font-size="11" letter-spacing="1.5" fill="#34d399">LIVE</text>
+    <line x1="40" y1="90" x2="860" y2="90" stroke="#1e293b"/>
+
+    <g>
+      <rect x="40" y="112" width="260" height="150" rx="16" fill="#101c30" stroke="#1e293b"/>
+      <text x="64" y="182" font-size="44" font-weight="700" fill="#f8fafc">230.1</text>
+      <text x="214" y="182" font-size="16" fill="#94a3b8">V</text>
+      <text x="64" y="224" font-size="11" letter-spacing="2" fill="#22d3ee">VOLTAGE</text>
+
+      <rect x="320" y="112" width="260" height="150" rx="16" fill="#101c30" stroke="#1e293b"/>
+      <text x="344" y="182" font-size="44" font-weight="700" fill="#f8fafc">0.442</text>
+      <text x="476" y="182" font-size="16" fill="#94a3b8">A</text>
+      <text x="344" y="224" font-size="11" letter-spacing="2" fill="#34d399">CURRENT</text>
+
+      <rect x="600" y="112" width="260" height="150" rx="16" fill="#101c30" stroke="#1e293b"/>
+      <text x="624" y="182" font-size="44" font-weight="700" fill="#f8fafc">101.7</text>
+      <text x="756" y="182" font-size="16" fill="#94a3b8">W</text>
+      <text x="624" y="224" font-size="11" letter-spacing="2" fill="#fbbf24">POWER</text>
+    </g>
+
+    <rect x="40" y="290" width="820" height="96" rx="16" fill="#0f1a2c" stroke="#1e293b"/>
+    <text x="64" y="318" font-size="11" letter-spacing="2" fill="#64748b">LIVE WAVEFORM · 50 Hz</text>
+    <line x1="64" y1="352" x2="836" y2="352" stroke="#1e293b" stroke-dasharray="4 6"/>
+    <path d="M64 352 C 78 322 106 322 120 352 C 134 382 162 382 176 352 C 190 322 218 322 232 352 C 246 382 274 382 288 352 C 302 322 330 322 344 352 C 358 382 386 382 400 352 C 414 322 442 322 456 352 C 470 382 498 382 512 352 C 526 322 554 322 568 352 C 582 382 610 382 624 352 C 638 322 666 322 680 352 C 694 382 722 382 736 352 C 750 322 778 322 792 352 C 806 382 826 382 836 352"
+          fill="none" stroke="url(#accent)" stroke-width="2.5" stroke-linecap="round" filter="url(#glow)"/>
+
+    <text x="40" y="414" font-size="11" fill="#64748b">Updates every second · WiFi hotspot</text>
+    <text x="860" y="414" font-size="11" text-anchor="end" fill="#64748b">PowerSense / 12345678</text>
+  </g>
+</svg>

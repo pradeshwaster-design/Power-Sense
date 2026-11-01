@@ -3,3 +3,4 @@
 *.csv text eol=lf
 *.ino text eol=lf
 *.ini text eol=lf
+*.svg text eol=lf

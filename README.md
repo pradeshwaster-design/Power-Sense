@@ -1,11 +1,25 @@
-# Power Sense
+<p align="center">
+  <img src="assets/banner.svg" alt="Power Sense — WiFi AC energy monitor on ESP32-C3" width="100%">
+</p>
+
+<p align="center">
+  <a href="#features">Features</a> ·
+  <a href="#hardware">Hardware</a> ·
+  <a href="#wiring">Wiring</a> ·
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#calibration">Calibration</a> ·
+  <a href="#troubleshooting">Troubleshooting</a> ·
+  <a href="#safety">Safety</a>
+</p>
+
+<p align="center">
+  <img alt="MCU: ESP32-C3" src="https://img.shields.io/badge/MCU-ESP32--C3-E7352C">
+  <img alt="Framework: Arduino" src="https://img.shields.io/badge/Framework-Arduino-00979D">
+  <img alt="Dashboard: WiFi hotspot" src="https://img.shields.io/badge/Dashboard-WiFi%20hotspot-2ea44f">
+  <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue">
+</p>
 
 **A self-contained WiFi energy monitor for 230 V AC — built on an ESP32-C3.**
-
-![MCU](https://img.shields.io/badge/MCU-ESP32--C3-E7352C?logo=espressif&logoColor=white)
-![Framework](https://img.shields.io/badge/Framework-Arduino-00979D?logo=arduino&logoColor=white)
-![Dashboard](https://img.shields.io/badge/Dashboard-WiFi%20hotspot-2ea44f)
-![License](https://img.shields.io/badge/License-MIT-blue)
 
 Power Sense measures **RMS voltage, RMS current and real power** with a ZMPT101B voltage sensor and a passive 5 A current transformer. The ESP32-C3 creates its own WiFi hotspot and serves a live, mobile-friendly dashboard. No router, cloud account, app or display is needed.
 
@@ -28,6 +42,14 @@ Power Sense measures **RMS voltage, RMS current and real power** with a ZMPT101B
 | **Serial output** | Live readings at 115200 baud |
 | **Dependencies** | Only built-in `WiFi`, `WebServer` and `Preferences` — nothing to install |
 | **Board** | ESP32-C3 Super Mini, USB-C |
+
+### Dashboard preview
+
+<p align="center">
+  <img src="assets/dashboard.svg" alt="Preview of the Power Sense dashboard showing voltage, current and power" width="100%">
+</p>
+
+<p align="center"><em>Illustrative preview — the real page is served by the board at 192.168.4.1.</em></p>
 
 ---
 
@@ -257,6 +279,9 @@ Read the full checklist: **[docs/SAFETY.md](docs/SAFETY.md)**.
 Power-Sense/
 ├── README.md
 ├── LICENSE
+├── assets/
+│   ├── banner.svg               # README banner
+│   └── dashboard.svg            # dashboard preview
 ├── firmware/
 │   ├── power_sense/
 │   │   └── power_sense.ino      # firmware

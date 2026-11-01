@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="380" viewBox="0 0 1200 380" role="img" aria-label="Power Sense — WiFi AC energy monitor on ESP32-C3">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#070c16"/>
+      <stop offset="0.55" stop-color="#0b1220"/>
+      <stop offset="1" stop-color="#0e1a2b"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#34d399"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#101c30"/>
+      <stop offset="1" stop-color="#0b1322"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#1e293b" stroke-width="1"/>
+    </pattern>
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10"/>
+    </filter>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="380" fill="url(#bg)"/>
+  <rect width="1200" height="380" fill="url(#grid)" opacity="0.35"/>
+  <circle cx="1040" cy="30" r="250" fill="#22d3ee" opacity="0.06"/>
+  <circle cx="1110" cy="360" r="230" fill="#34d399" opacity="0.06"/>
+
+  <!-- left content -->
+  <g font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif">
+    <rect x="64" y="50" width="312" height="34" rx="17" fill="#0f172a" stroke="#1e293b"/>
+    <circle cx="84" cy="67" r="4" fill="#34d399"/>
+    <text x="98" y="72" font-size="11" letter-spacing="2" fill="#94a3b8">ESP32-C3 · WIFI ENERGY MONITOR</text>
+
+    <text x="60" y="158" font-size="66" font-weight="800" letter-spacing="-2" fill="#f8fafc">POWER</text>
+    <text x="60" y="224" font-size="66" font-weight="800" letter-spacing="-2" fill="url(#accent)">SENSE</text>
+
+    <rect x="64" y="240" width="64" height="4" rx="2" fill="url(#accent)"/>
+
+    <text x="64" y="272" font-size="18" fill="#94a3b8">Voltage · Current · Real power, live in your browser.</text>
+
+    <g font-size="11" letter-spacing="1.2" fill="#cbd5e1">
+      <rect x="64" y="296" width="112" height="30" rx="15" fill="#0f172a" stroke="#1e293b"/>
+      <circle cx="82" cy="311" r="3" fill="#22d3ee"/>
+      <text x="94" y="315">VOLTAGE</text>
+
+      <rect x="184" y="296" width="112" height="30" rx="15" fill="#0f172a" stroke="#1e293b"/>
+      <circle cx="202" cy="311" r="3" fill="#34d399"/>
+      <text x="214" y="315">CURRENT</text>
+
+      <rect x="304" y="296" width="112" height="30" rx="15" fill="#0f172a" stroke="#1e293b"/>
+      <circle cx="322" cy="311" r="3" fill="#fbbf24"/>
+      <text x="334" y="315">POWER</text>
+    </g>
+
+    <text x="64" y="352" font-size="10" letter-spacing="2" fill="#64748b">OPEN SOURCE · MIT · NO CLOUD</text>
+  </g>
+
+  <!-- dashboard card -->
+  <g font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif">
+    <rect x="700" y="58" width="436" height="264" rx="18" fill="url(#card)" stroke="#1e293b"/>
+    <rect x="700" y="58" width="436" height="264" rx="18" fill="none" stroke="url(#accent)" stroke-opacity="0.18"/>
+
+    <circle cx="728" cy="88" r="4" fill="#34d399"/>
+    <text x="740" y="92" font-size="11" letter-spacing="2" fill="#34d399">LIVE</text>
+    <text x="1112" y="92" font-size="11" text-anchor="end" fill="#64748b">192.168.4.1</text>
+    <line x1="724" y1="108" x2="1112" y2="108" stroke="#1e293b"/>
+
+    <g>
+      <rect x="724" y="124" width="124" height="92" rx="12" fill="#0f1a2c" stroke="#1e293b"/>
+      <text x="740" y="164" font-size="27" font-weight="700" fill="#f8fafc">230.1</text>
+      <text x="812" y="164" font-size="12" fill="#94a3b8">V</text>
+      <text x="740" y="194" font-size="10" letter-spacing="1.5" fill="#22d3ee">VOLTAGE</text>
+
+      <rect x="860" y="124" width="124" height="92" rx="12" fill="#0f1a2c" stroke="#1e293b"/>
+      <text x="876" y="164" font-size="27" font-weight="700" fill="#f8fafc">0.442</text>
+      <text x="948" y="164" font-size="12" fill="#94a3b8">A</text>
+      <text x="876" y="194" font-size="10" letter-spacing="1.5" fill="#34d399">CURRENT</text>
+
+      <rect x="996" y="124" width="116" height="92" rx="12" fill="#0f1a2c" stroke="#1e293b"/>
+      <text x="1012" y="164" font-size="27" font-weight="700" fill="#f8fafc">101.7</text>
+      <text x="1076" y="164" font-size="12" fill="#94a3b8">W</text>
+      <text x="1012" y="194" font-size="10" letter-spacing="1.5" fill="#fbbf24">POWER</text>
+    </g>
+
+    <line x1="724" y1="270" x2="1112" y2="270" stroke="#1e293b" stroke-dasharray="4 6"/>
+    <path d="M724 270 C 734 242 754 242 764 270 C 774 298 794 298 804 270 C 814 242 834 242 844 270 C 854 298 874 298 884 270 C 894 242 914 242 924 270 C 934 298 954 298 964 270 C 974 242 994 242 1004 270 C 1014 298 1034 298 1044 270 C 1054 242 1074 242 1084 270 C 1094 298 1112 298 1112 270"
+          fill="none" stroke="url(#accent)" stroke-width="2.5" stroke-linecap="round" filter="url(#glow)"/>
+    <text x="1112" y="306" font-size="10" text-anchor="end" fill="#64748b">50 Hz</text>
+  </g>
+
+  <rect x="0" y="376" width="1200" height="4" fill="url(#accent)" opacity="0.85"/>
+</svg>
