@@ -1,191 +1,279 @@
 # Power Sense
 
-**A simple, open-source energy monitor for a 230 V AC power strip.**
+**A self-contained WiFi energy monitor for 230 V AC — built on an ESP32-C3.**
 
-Power Sense measures AC voltage, current, real power, apparent power and power factor. It runs on an ESP32-C3 Super Mini with a ZMPT101B voltage sensor and a ZMCT103C 5 A current sensor, and it is powered by a single 5 V 2 A USB charger.
+![MCU](https://img.shields.io/badge/MCU-ESP32--C3-E7352C?logo=espressif&logoColor=white)
+![Framework](https://img.shields.io/badge/Framework-Arduino-00979D?logo=arduino&logoColor=white)
+![Dashboard](https://img.shields.io/badge/Dashboard-WiFi%20hotspot-2ea44f)
+![License](https://img.shields.io/badge/License-MIT-blue)
 
-> **Safety first:** this project connects to mains voltage. Read [docs/SAFETY.md](docs/SAFETY.md) before connecting anything. If you are not confident working with 230 V AC, use a certified energy-monitoring plug instead.
+Power Sense measures **RMS voltage, RMS current and real power** with a ZMPT101B voltage sensor and a passive 5 A current transformer. The ESP32-C3 creates its own WiFi hotspot and serves a live, mobile-friendly dashboard. No router, cloud account, app or display is needed.
 
-> **Scope:** this version is a **monitor only**. It has **no relay, no display and no push button**. The power strip is live whenever it is plugged in.
+> **Mains voltage is dangerous.** Read [Safety](#safety) and [docs/SAFETY.md](docs/SAFETY.md) before connecting anything. If you are not confident working with 230 V AC, use a certified energy-monitoring plug instead.
 
-## What it does
+> **Scope:** monitor only — **no relay, no display, no push button**. The power strip is live whenever it is plugged in.
 
-- Measures AC voltage and current.
-- Calculates real power, apparent power and power factor.
-- Sends the readings over serial now; the web dashboard is the next milestone.
-- Stores calibration values in the sketch.
-- Uses one **5 V 2 A USB charger** for everything.
+---
 
-## What it does not do
+## Features
 
-- It does **not** switch the load. Use the power strip's own mechanical switch.
-- It has **no OLED or LCD**.
-- It has **no push button**.
-- It does **not** need a cloud account or an internet connection.
+| | |
+|---|---|
+| **Measurements** | RMS voltage, RMS current, real power |
+| **Dashboard** | Self-hosted page at `http://192.168.4.1`, updates every second |
+| **WiFi** | The board is its own access point: `PowerSense` / `12345678` |
+| **Calibration** | Hidden `/cal` page; enter real values and the board calculates the factors |
+| **Storage** | Calibration survives reboots and re-uploads (`Preferences` / NVS) |
+| **Signal handling** | DC-offset removal, idle-noise subtraction, smoothing and a 5 s warm-up |
+| **Serial output** | Live readings at 115200 baud |
+| **Dependencies** | Only built-in `WiFi`, `WebServer` and `Preferences` — nothing to install |
+| **Board** | ESP32-C3 Super Mini, USB-C |
+
+---
 
 ## Hardware
 
-| Part | Purpose |
-|---|---|
-| ESP32-C3 Super Mini | Reads the sensors and runs the firmware |
-| ZMPT101B module | Measures AC voltage |
-| ZMCT103C 5 A module | Measures AC current |
-| 5 V 2 A USB charger | Powers the ESP32; the ESP32 powers the sensors |
-| 100 nF capacitors (×4) | ADC filtering and 3.3 V decoupling |
-| 100 µF electrolytic | 3.3 V rail near the sensors |
-| 5 A fuse and holder | Protects the load wiring and the CT |
-| Plastic enclosure | Keeps mains and low voltage separated |
-
-See [docs/BOM.csv](docs/BOM.csv) for the full parts list and approximate India prices.
-
-## Power setup
-
-```text
-5 V 2 A charger ──> ESP32-C3 5V pin
-ESP32-C3 3V3 pin ──> ZMPT101B VCC
-                 └─> ZMCT103C VCC
-ESP32-C3 GND ─────> both sensor GND
-```
-
-- Power the C3 through its **5V pin** (or USB-C, if you prefer).
-- Power **both sensors from the C3's 3V3 pin**. Each module draws only a few mA, and the onboard regulator has plenty of headroom for them.
-- Do **not** connect the charger to the 5V pin and a USB cable to the PC at the same time unless your board has a back-feed diode. Program with mains and the external supply disconnected.
-- Add a **100 µF** electrolytic and a **100 nF** ceramic capacitor across 3.3 V/GND near the sensors.
-- Wi-Fi peaks at about 350 mA; the sensors add only a few mA. A 2 A charger is more than enough.
-
-## Pinout
-
-### ESP32-C3 Super Mini
-
-| Pin | Connect to | Notes |
+| Part | Qty | Notes |
 |---|---|---|
-| **5V** | 5 V from the charger | Main supply |
-| **GND** | Common ground | ESP32, sensors |
-| **3V3** | Both sensor VCC pins | Regulator output |
-| **GPIO3** | ZMPT101B OUT | ADC1_CH3 |
-| **GPIO4** | ZMCT103C OUT | ADC1_CH4 |
+| ESP32-C3 Super Mini | 1 | USB-C, 4 MB flash |
+| ZMPT101B AC voltage module | 1 | 3-pin module, powered from 3.3 V |
+| 5 A AC current sensor module | 1 | 2-pin **passive** CT module (`G`, `S`), no VCC |
+| 10 kΩ 1% resistor | 2 | 1.65 V bias divider |
+| 1 kΩ 1% resistor | 1 | Series protection from CT `S` to GPIO4 |
+| 22 µF 16 V electrolytic | 1 | Bias-node decoupling |
+| 100 nF ceramic capacitor | 2 | Optional ADC filters on GPIO3 and GPIO4 |
+| 150 Ω resistor | 1 | Only if the CT module has no burden resistor |
+| 5 A fuse and holder | 1 | Mains protection |
+| Enclosure, mains wire, terminals | — | Insulated, mains-rated |
 
-Everything else is unused. Do not use GPIO5 (ADC2, poor readings with Wi-Fi), GPIO8/GPIO9 (strapping; GPIO8 also drives the onboard LED) or GPIO20/GPIO21 (UART).
+Full list with prices: **[docs/BOM.csv](docs/BOM.csv)**.
 
-### ZMPT101B voltage sensor
+---
 
-| Module pin | Connect to |
-|---|---|
-| VCC | 3V3 |
-| GND | GND |
-| OUT | GPIO3 |
-| AC-L | Mains Live |
-| AC-N | Mains Neutral |
+## Wiring
 
-### ZMCT103C current sensor
+### Pinout
 
-| Module pin | Connect to |
-|---|---|
-| GND | GND |
-| GND | GND |
-| OUT | GPIO4 |
-| VCC | 3V3 |
-| CT hole | **Live wire only**, in series with the load |
+| Signal | ESP32-C3 pin | Notes |
+|---|---|---|
+| ZMPT101B `OUT` | **GPIO3** | ADC1_CH3, biased at about 1.65 V |
+| CT `S` | **GPIO4** | Through a **1 kΩ** series resistor, ADC1_CH4 |
+| CT `G` | **Bias node** | About **1.65 V** — **not ground** |
+| Sensor power | **3V3** | ZMPT101B VCC and the 10 kΩ divider top |
+| Ground | **GND** | ZMPT101B GND, divider bottom, 22 µF, filters |
+| Board power | **USB-C** | 5 V 2 A charger |
 
-> Header order varies between batches. A common ZMCT103C order is GND–GND–OUT–VCC; a common ZMPT101B order is VCC–OUT–GND–GND. Read the module silkscreen before applying power.
+Everything else is unused. Avoid GPIO5 (ADC2, unreliable with WiFi), GPIO8/GPIO9 (strapping; GPIO8 also drives the LED) and GPIO20/GPIO21 (UART).
 
-## Analog input — no divider needed
+> The CT module is a **passive transformer** with no VCC. Its `G` pin must sit at the 1.65 V bias point. Connecting `G` to ground will clip the negative half-cycle and give wrong readings.
 
-Both modules bias their output at **VCC/2**, so at 3.3 V the signal sits at about **1.65 V** and never exceeds the ESP32-C3 ADC range. **Do not add a divider.**
-
-However, the modules use an **LM358-type op-amp that is not rail-to-rail**. At 3.3 V the output tops out around **1.8 V**, leaving only about **0.15 V of headroom above the 1.65 V midpoint**.
-
-- Turn the blue trimpot on the ZMPT101B **down** until the waveform is no longer clipped.
-- Turn the current-sensor trimpot down as well; this module may clip well below 5 A at 3.3 V.
-- Watch the raw ADC min/max while increasing the load. If the maximum stops rising, the op-amp is clipping; reduce the gain.
-- Fit a **100 nF** capacitor from each OUT pin to GND, close to the ESP32.
-- The ESP32-C3 ADC is noisy, especially with Wi-Fi on. Average several hundred samples.
-
-Because the usable swing is small, this build is fine for monitoring trends but is **not** a precision meter. If you need the full sensor range, see [5 V fallback](#5-v-fallback).
-
-## AC wiring
+### Signal circuit
 
 ```text
-230 V L ──[5 A fuse]──┬── ZMPT101B AC-L
-                      ├── CT (Live wire through the hole)
-                      └── strip / load Live
+                        3V3
+                         │
+                       [10k]
+                         │
+  CT module G ───────────●────────┬────────► bias node ≈ 1.65 V
+                         │        │
+                       [10k]    [22 µF]  (+ to bias)
+                         │        │
+                        GND      GND
 
-230 V N ──────────────┴── ZMPT101B AC-N
-                          strip / load Neutral
+  CT module S ──[1k]──────────────────────► GPIO4
 
-230 V E ───────────────── strip / load Earth
+  ZMPT101B VCC ───────────────────────────► 3V3
+           GND ───────────────────────────► GND
+           OUT ───────────────────────────► GPIO3
 ```
 
-- The ZMPT101B input is connected **across Live and Neutral** (in parallel with the load).
-- The current transformer goes around the **Live wire only**, with the load current flowing through it.
-- **Nothing on the AC side connects to the ESP32 side.** The sensors provide isolation.
-- Use a 5 A fuse on Live, keep earth continuous and use an enclosure with a barrier between mains and low voltage.
+Optional: fit **100 nF** from GPIO3 to GND and from GPIO4 to GND, close to the ESP32. This reduces ADC noise, especially while WiFi is transmitting.
 
-## Firmware
+### AC side
 
-The sketch is in [`firmware/power_sense/power_sense.ino`](firmware/power_sense/power_sense.ino), with a PlatformIO project file at [`firmware/platformio.ini`](firmware/platformio.ini).
+```text
+230 V L ──[5 A fuse]──┬──( CT hole )──► load Live
+                      └── ZMPT101B AC-L
 
-```bash
-cd firmware
-pio run -t upload      # compile and flash
-pio device monitor     # 115200 baud
+230 V N ──────────────┬────────────────► load Neutral
+                      └── ZMPT101B AC-N
+
+230 V E ──────────────────────────────► load Earth
 ```
 
-- 12-bit ADC, 11 dB attenuation.
-- 400 sample pairs at a fixed 100 µs spacing (40 ms window, about two 50 Hz cycles).
-- DC offset removed per window, then RMS, real power and power factor.
-- Raw min/max printed so you can spot clipping.
+- **ZMPT101B** input terminals go **across Live and Neutral**, in parallel with the load.
+- **CT**: pass **only the Live wire** through the hole, in series with the load.
+- Nothing on the AC side connects to the ESP32 side. The sensors provide isolation.
+- Add a **150 Ω burden resistor** between `S` and `G` only if the module does not already have one. With the mains disconnected, measure across `S` and `G`: a few hundred ohms means a burden is fitted.
 
-Calibrate the two constants at the top of the sketch:
+---
 
-```cpp
-float V_CAL = 1.60f;     // volts RMS per ADC count  (calibrate)
-float I_CAL = 0.036f;    // amps RMS per ADC count   (calibrate)
-```
+## How it works
 
-Steps:
+1. **Sample** both ADC channels continuously for **200 ms** — ten 50 Hz cycles.
+2. **Remove the DC bias** by subtracting each channel's mean.
+3. **Compute RMS** from the raw counts: `Vrms = sqrt(mean(v²))`, `Irms = sqrt(mean(i²))`.
+4. **Compute real power** from `P = mean(v × i)`, which preserves the phase between voltage and current.
+5. **Subtract idle noise** in quadrature, using values measured with the mains off.
+6. **Apply calibration** (`V_CAL`, `I_CAL`) and small dead-bands so an idle sensor reads zero.
+7. **Smooth** the result with a low-pass filter and start from the first real reading. A 5 s warm-up lets the bias capacitor and ADC settle after power-up.
 
-1. Power up with a known AC voltage and measure it with a multimeter.
-2. Read the uncalibrated `V` from the serial monitor.
-3. `V_CAL = V_true / V_raw`.
-4. Use a known resistive load (for example a 100 W bulb) and a clamp meter.
-5. `I_CAL = I_true / I_raw`.
+The firmware samples voltage and current one after the other, so there is a small phase error. This is fine for monitoring, but it is not a revenue-grade meter.
+
+---
 
 ## Quick start
 
-1. Read [docs/SAFETY.md](docs/SAFETY.md).
-2. Wire the low-voltage side only: charger → 5V pin, sensors → 3V3/GND, outputs → GPIO3/GPIO4, 100 nF at each output.
-3. Power up **without mains** and check:
-   - 3.3 V at both sensor VCC pins.
-   - About 1.65 V DC at each OUT pin.
-   - Raw ADC centred near mid-scale, with no signal.
-4. Print raw min/max and turn the trimpots down until the waveform is not clipped.
-5. Calibrate `V_CAL` and `I_CAL`.
-6. Only then connect the AC side, using an RCD and preferably an isolation transformer.
+### 1. Arduino IDE
 
-## 5 V fallback
+Install **esp32 by Espressif Systems** from Boards Manager, then use:
 
-If the 3.3 V swing is too small or the current sensor clips too early, power both modules from **5V** and divide each output back down:
+| Setting | Value |
+|---|---|
+| Board | **ESP32C3 Dev Module** |
+| USB CDC On Boot | **Enabled** (needed for Serial) |
+| CPU Frequency | 160 MHz |
+| Flash Size | 4 MB |
+| Flash Mode | QIO (use DIO if it will not boot) |
+| Partition Scheme | Default 4 MB with spiffs |
+| Upload Speed | 921600 (try 460800 or 115200 if upload fails) |
+| Core Debug Level | None |
+| Port | The new COM port |
 
-```text
-Sensor OUT ──[10k]──●──[20k]── GND
-                    │
-ESP32 GPIO3/4 ──────●──[100nF]── GND
-                    │
-              BAT54S (optional clamp)
+Open [`firmware/power_sense/power_sense.ino`](firmware/power_sense/power_sense.ino) and upload.
+
+### 2. PlatformIO
+
+```bash
+cd firmware
+pio run -t upload
+pio device monitor
 ```
 
-- 5 V → about 2.2–2.3 V at the pin (the LM358 tops out near 3.5 V, not 5 V).
-- That stays inside the ADC's usable range and protects the pin.
-- Recalibrate after changing the divider.
+Verified with Arduino-ESP32 3.0.4: about 15% RAM and 77% flash used.
+
+### 3. Connect
+
+1. Join the WiFi network **`PowerSense`** (password **`12345678`**).
+2. Open **http://192.168.4.1**.
+
+Your phone may warn that the network has no internet. Stay connected — the dashboard is local.
+
+### 4. First readings
+
+Before calibration the numbers are raw ADC counts multiplied by the default factors, so they will look wrong. That is expected. Calibrate before judging accuracy.
+
+---
+
+## Calibration
+
+Open **http://192.168.4.1/cal**. The page is intentionally not linked from the dashboard.
+
+1. **Zero the noise** — with the CT empty and the mains **off**, tap **Zero idle noise**. This records the sensor/ADC noise so it can be subtracted.
+2. **Voltage** — measure the real mains voltage with a multimeter, type it into *Real voltage*, and tap **Save calibration**.
+3. **Current** — pass a known resistive load (for example a 60 W or 100 W bulb) through the CT. Real current is `watts ÷ volts`. Type it into *Real current* and tap **Save calibration**. Wait for the live reading to settle before saving.
+4. **Verify** with a second load. For a resistive load, power should be close to the rated wattage.
+
+Tune the ZMPT101B trimpot **once**, before calibrating, so the voltage signal is clean and the raw count sits roughly between **400 and 900** without clipping. Do not touch it afterwards.
+
+Calibration is stored in flash. **Reset to defaults** restores `V_CAL = 0.305`, `I_CAL = 0.005`.
+
+> The `/cal` page has no password. Anyone on the hotspot who knows the URL can change the calibration. Change the hotspot password in the sketch if that matters to you.
+
+---
+
+## Dashboard and API
+
+| Route | Purpose |
+|---|---|
+| `/` | Live dashboard (V, A, W) |
+| `/data` | JSON: `v`, `i`, `p`, `rv`, `ri`, `vc`, `ic` |
+| `/cal` | Calibration page (unlinked) |
+| `/setcal?v=…&i=…` | Save a new calibration |
+| `/zero` | Record idle noise |
+| `/reset` | Restore calibration defaults |
+
+Example `/data` response:
+
+```json
+{"v":230.1,"i":0.442,"p":101.7,"rv":754.2,"ri":88.4,"vc":0.305000,"ic":0.005000}
+```
+
+`rv` and `ri` are the noise-removed signal levels in ADC counts; they are useful while calibrating.
+
+---
+
+## Troubleshooting
+
+| Problem | Check |
+|---|---|
+| Upload fails | Hold **BOOT**, plug in USB-C, release, then upload. Try 460800 or 115200 baud. Use a data cable. |
+| No Serial output | Set **USB CDC On Boot: Enabled**, open the port at **115200**. |
+| Hotspot not visible | The ESP32 AP is 2.4 GHz only. Wait a few seconds after reset; check the board is powered. |
+| Voltage shows 0 | ZMPT101B VCC on **3V3**, OUT on **GPIO3**, GND common, trimpot not at minimum. |
+| Current always 0 | CT around **Live only**; `G` on the **1.65 V bias**, not ground; `S` through **1k** to GPIO4; load above ~0.03 A; calibrate. |
+| Readings jump around | Fit the 100 nF filters, keep `WiFi.setTxPower(WIFI_POWER_8_5dBm)`, use a good USB supply, let the 5 s warm-up finish. |
+| Reading is scaled wrong | Recalibrate. The trimpot or burden resistor may have changed. |
+| Board resets or WiFi drops | Use a reputable 5 V 2 A charger and a short USB cable. |
+
+---
+
+## Limitations
+
+- Accuracy depends on calibration and on the ESP32-C3 ADC, which is noisy and not perfectly linear.
+- Very small loads (a few watts) read poorly.
+- Voltage and current are sampled sequentially, so power factor accuracy is limited.
+- No energy (kWh) accumulation, power factor display or history logging.
+- Calibration page is unprotected.
+- This is a hobby project, **not** a certified energy meter.
+
+### Possible next steps
+
+Station mode (join a home router), kWh logging, MQTT/Home Assistant, an external ADC such as the ADS1115, a protected calibration page, or a 3D-printed enclosure.
+
+---
+
+## Safety
+
+This project connects to **230 V AC**, which can cause serious injury or death.
+
+- Use an insulated enclosure and mains-rated wire.
+- Keep mains wiring physically separate from the low-voltage side.
+- Fuse the Live wire and keep Earth continuous.
+- Never touch terminals while powered. Unplug before changing wiring.
+- Use an RCD/GFCI and, preferably, an isolation transformer for the first test.
+- Do not exceed **5 A**; stay below **4 A** continuous.
+- Never open the CT secondary while current flows.
+- Power the board from a reputable **5 V USB charger**. Disconnect mains before connecting it to a laptop.
+- If you are not experienced with mains wiring, get help from someone who is.
+
+Read the full checklist: **[docs/SAFETY.md](docs/SAFETY.md)**.
+
+---
 
 ## Repository
 
-- **[Build plan](docs/PLAN.md)** — architecture, calculations, calibration and test plan.
-- **[Pinout & wiring](docs/PINOUT.md)** — complete connection tables.
-- **[Bill of materials](docs/BOM.csv)** — parts and approximate prices.
-- **[Safety checklist](docs/SAFETY.md)** — read before mains testing.
+```text
+Power-Sense/
+├── README.md
+├── LICENSE
+├── firmware/
+│   ├── power_sense/
+│   │   └── power_sense.ino      # firmware
+│   └── platformio.ini
+└── docs/
+    ├── BOM.csv                  # parts and prices
+    ├── PINOUT.md                # wiring reference
+    ├── PLAN.md                  # design and test plan
+    └── SAFETY.md                # mains safety checklist
+```
 
-## Status
+## License
 
-Hardware plan, pinout and a first firmware sketch are done. The web dashboard and enclosure are next. This version intentionally has **no relay, no display and no push button**.
+MIT — see [LICENSE](LICENSE).
+
+## Author
+
+Built by **Pradesh**, an engineering student working on robotics and embedded systems.
+
+Repository: <https://github.com/pradeshwaster-design/Power-Sense>
